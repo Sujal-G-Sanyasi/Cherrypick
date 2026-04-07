@@ -1,0 +1,12 @@
+pandas 
+numpy 
+matplotlib
+shap
+seaborn
+joblib
+plotly
+xgboost
+rich
+lightgbm
+catboost
+pytest
