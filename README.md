@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/cherrylogo.png" alt="cherrypick-ml logo" width="1000" height=400>
+  <img src="assets/cherrylogo.jpeg" alt="cherrypick-ml logo" width="1000" height=400>
 </p>
 
 -----------------
