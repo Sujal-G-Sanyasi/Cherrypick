@@ -19,12 +19,19 @@ def get_requirements():
 print(get_requirements())
 
 setup(
-    name="cherrypickml",
+    name="cherrypick-ml",
     author="Sujal G Sanyasi",
     version="0.1.0",
     author_email="cherrypickml1@gmail.com",
-    license="MIT",
     description="A lightweight ML orchestration library with preprocessing, anomaly detection, and explainability tools",
+    long_description= open("README.md", encoding="utf-8").read(),
+    long_description_content_type="text/markdown",
+    license="MIT",
+    classifiers=[
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3",
+        "Operating System :: OS Independent",
+    ],
     packages=find_packages(),
     install_requires=get_requirements()
 )
