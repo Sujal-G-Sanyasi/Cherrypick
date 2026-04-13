@@ -82,7 +82,8 @@ The library is structured into the following modules:
 
 ## Documentation
 Explore the full documentation for **Cherrypick-ML**
-[![Docs](https://img.shields.io/badge/docs-online-blue?style=plastic)]([https://cherrypick.readthedocs.io](https://cherrypick-ml.readthedocs.io/en/latest/modules.html))
+[![Docs](https://img.shields.io/badge/docs-live-blue?style=plastic)](https://cherrypick-ml.readthedocs.io)
+
 
 ## Where to get it
 
