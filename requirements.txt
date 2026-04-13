@@ -10,3 +10,4 @@ rich
 lightgbm
 catboost
 pytest
+imblearn

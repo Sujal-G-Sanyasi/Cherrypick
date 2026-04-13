@@ -174,7 +174,7 @@ class Preprocessor:
             X_train = pd.concat([X_train, encoded_df_Xtrain], axis=1, ignore_index=False)
             X_test = pd.concat([X_test, encoded_df_Xtest], axis=1, ignore_index=False)
 
-            joblib.dump(encoder, f'{encoder_dir}/onehot_encoder.pkl')
+            joblib.dump(encoder, f"{encoder_dir}/onehot_encoder.pkl")
 
             return X_train, X_test
 
@@ -183,7 +183,7 @@ class Preprocessor:
             y_train = encoder.fit_transform(y_train)
             y_test = encoder.transform(y_test)
             
-            joblib.dump(encoder, f'{encoder_dir}/label_encoder.pkl')
+            joblib.dump(encoder, f"{encoder_dir}/label_encoder.pkl")
 
             return y_train, y_test
 

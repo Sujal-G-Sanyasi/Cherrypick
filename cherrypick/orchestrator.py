@@ -84,6 +84,7 @@ class Orchestrator:
         self.best_model = []
         self.model_data = {}
         self.model_data_classify = {}
+        self.SCALER_CONFIG = {}
     
     @property
     def best_estimator(self):
@@ -139,8 +140,8 @@ class Orchestrator:
                 for name, model in regressor_models.items():
                     if name not in linear_model_regression:
 
-                        regressor = model.fit(self.X_train, self.y_train)
-                        y_pred = regressor.predict(self.X_test)
+                        ensemble = model.fit(self.X_train, self.y_train)
+                        y_pred = ensemble.predict(self.X_test)
 
                         accuracy = r2_score(self.y_test, y_pred)
                         mae = mean_absolute_error(self.y_test, y_pred)
@@ -149,7 +150,7 @@ class Orchestrator:
                         adj_r2 = self.__adjusted_r2score(r2=accuracy) ## will be soon applying Adjusted R2_score for the penalisation influence of the useless features.
 
                         result = dict(
-                            estimator = regressor,
+                            estimator = ensemble,
                             accuracy = accuracy,
                             mse=mse,
                             mae=mae,
@@ -163,8 +164,8 @@ class Orchestrator:
                         X_train_scaled = scaler.fit_transform(self.X_train)
                         X_test_scaled = scaler.transform(self.X_test)
 
-                        ensemble = model.fit(X_train_scaled, self.y_train)
-                        y_pred = ensemble.predict(X_test_scaled)
+                        regressor = model.fit(X_train_scaled, self.y_train)
+                        y_pred = regressor.predict(X_test_scaled)
 
                         accuracy = r2_score(self.y_test, y_pred)
                         mae = mean_absolute_error(self.y_test, y_pred)
@@ -172,14 +173,17 @@ class Orchestrator:
                         rmse = (mse) ** 0.5
                         
                         result = dict(
-                            estimator = ensemble,
+                            estimator = regressor,
                             accuracy = accuracy,
                             mse=mse,
                             mae=mae,
                             rmse = rmse
                         )
+                        model_name = type(regressor).__name__
+                            
+                        self.SCALER_CONFIG[model_name] = scaler
                         self.model_data[name] = result
-                        joblib.dump(scaler, f'{self.file_dir}/scaler.pkl')
+                        # joblib.dump(scaler, f'{self.file_dir}/scaler.pkl')
                         
 
                 if self.focus_regressor == "mse":
@@ -187,9 +191,14 @@ class Orchestrator:
                     data_metrics = pd.DataFrame(self.model_data).T.sort_values(by=['mse', 'accuracy'], ascending=[True, False])
                     best_model = data_metrics['estimator'].iloc[0]
                     model_name = type(best_model).__name__
+
+                    if model_name in linear_model_regression:
+                        scaler = self.SCALER_CONFIG[model_name]
+                        joblib.dump(scaler,  f"{self.file_dir}/scaler_r.pkl")
+                    
                    
                     self.best_model.append(best_model)
-                    joblib.dump(best_model, f'{self.file_dir}/{model_name}.pkl')
+                    joblib.dump(best_model, f"{self.file_dir}/{model_name}.pkl")
                     print("-------------Demorgraphics-------------")
                     print(f"Best Model : {model_name}")
                     print(f"{model_name} Accuracy(R2 SCore) : {data_metrics['accuracy'].iloc[0]}")
@@ -202,9 +211,13 @@ class Orchestrator:
                     data_metrics = pd.DataFrame(self.model_data).T.sort_values(by=['mae', 'accuracy'], ascending=[True, False])
                     best_model = data_metrics['estimator'].iloc[0]
                     model_name = type(best_model).__name__
+
+                    if model_name in linear_model_regression:
+                        scaler = self.SCALER_CONFIG[model_name]
+                        joblib.dump(scaler,  f"{self.file_dir}/scaler_r.pkl")
                    
                     self.best_model.append(best_model)
-                    joblib.dump(best_model, f'{self.file_dir}/{model_name}.pkl')
+                    joblib.dump(best_model, f"{self.file_dir}/{model_name}.pkl")
                     print("-------------Demorgraphics-------------")
                     print(f"Best Model : {model_name}")
                     print(f"{model_name} Accuracy(R2 SCore) : {data_metrics['accuracy'].iloc[0]}")
@@ -217,9 +230,13 @@ class Orchestrator:
                     data_metrics = pd.DataFrame(self.model_data).T.sort_values(by=['rmse', 'accuracy'], ascending=[True, False])
                     best_model = data_metrics['estimator'].iloc[0]
                     model_name = type(best_model).__name__
+
+                    if model_name in linear_model_regression:
+                        scaler = self.SCALER_CONFIG[model_name]
+                        joblib.dump(scaler,  f"{self.file_dir}/scaler_r.pkl")
                    
                     self.best_model.append(best_model)
-                    joblib.dump(best_model, f'{self.file_dir}/{model_name}.pkl')
+                    joblib.dump(best_model, f"{self.file_dir}/{model_name}.pkl")
                     print("-------------Demorgraphics-------------")
                     print(f"Best Model : {model_name}")
                     print(f"{model_name} Accuracy(R2 SCore) : {data_metrics['accuracy'].iloc[0]}")
@@ -270,8 +287,12 @@ class Orchestrator:
                                 recall = recallscore,
                                 f1score = f1scores
                             )
+
+                            model_name = type(estimator).__name__
+                            
+                            self.SCALER_CONFIG[model_name] = scaler
                             self.model_data_classify[name] = result
-                            joblib.dump(scaler, f'{self.file_dir}/scaler.pkl')
+                            # joblib.dump(scaler, f'{self.file_dir}/scaler.pkl')
                             
                 try:
                     if self.focus_classifier == 'precision':
@@ -279,9 +300,13 @@ class Orchestrator:
                             data_metrics = pd.DataFrame(self.model_data_classify).T.sort_values(by='precision', ascending=False)
                             best_model = data_metrics['estimator'].iloc[0]
                             model_name = type(best_model).__name__
+
+                            if model_name in ["LogisticRegression", "SVC", "KNeighborsClassifier"]:
+                                scaler = self.SCALER_CONFIG[model_name]
+                                joblib.dump(scaler,  f"{self.file_dir}/scaler_c.pkl")
                         
                             self.best_model.append(best_model)
-                            joblib.dump(best_model, f'{self.file_dir}/{model_name}.pkl')
+                            joblib.dump(best_model, f"{self.file_dir}/{model_name}.pkl")
                             print("-------------Demographics-------------")
                             print(f"Best Model : {model_name}({self.focus_classifier})")
                             print(f"{model_name} Accuracy : {data_metrics['accuracy'].iloc[0]}")
@@ -296,9 +321,13 @@ class Orchestrator:
                             data_metrics = pd.DataFrame(self.model_data_classify).T.sort_values(by='recall', ascending=False)
                             best_model = data_metrics['estimator'].iloc[0]
                             model_name = type(best_model).__name__
+
+                            if model_name in ["LogisticRegression", "SVC", "KNeighborsClassifier"]:
+                                scaler = self.SCALER_CONFIG[model_name]
+                                joblib.dump(scaler,  f"{self.file_dir}/scaler_c.pkl")
                         
                             self.best_model.append(best_model)
-                            joblib.dump(best_model, f'{self.file_dir}/{model_name}.pkl')
+                            joblib.dump(best_model, f"{self.file_dir}/{model_name}.pkl")
                             print("-------------Demographics-------------")
                             print(f"Best Model : {model_name}({self.focus_classifier})")
                             print(f"{model_name} Accuracy : {data_metrics['accuracy'].iloc[0]}")
@@ -312,9 +341,13 @@ class Orchestrator:
                             data_metrics = pd.DataFrame(self.model_data_classify).T.sort_values(by='f1score', ascending=False)
                             best_model = data_metrics['estimator'].iloc[0]
                             model_name = type(best_model).__name__
+
+                            if model_name in ["LogisticRegression", "SVC", "KNeighborsClassifier"]:
+                                scaler = self.SCALER_CONFIG[model_name]
+                                joblib.dump(scaler,  f"{self.file_dir}/scaler_c.pkl")
                         
                             self.best_model.append(best_model)
-                            joblib.dump(best_model, f'{self.file_dir}/{model_name}.pkl')
+                            joblib.dump(best_model, f"{self.file_dir}/{model_name}.pkl")
                             print("-------------Demographics-------------")
                             print(f"Best Model : {model_name}({self.focus_classifier})")
                             print(f"{model_name} Accuracy : {data_metrics['accuracy'].iloc[0]}")
@@ -357,7 +390,7 @@ class Orchestrator:
                 )
                 for keys, values in result.items():
                       print(f'{keys} : {values}')
-                joblib.dump(result['best_model'], f'{self.file_dir}/{result['best_model']}.pkl')
+                joblib.dump(result['best_model'], f"{self.file_dir}/{result['best_model']}.pkl")
                 
                 return result['best_model']
 
@@ -383,7 +416,7 @@ class Orchestrator:
                 )
                 for keys, values in result.items():
                       print(f'{keys} : {values}')
-                joblib.dump(result['best_model'], f'{self.file_dir}/{result['best_model']}.pkl')
+                joblib.dump(result['best_model'], f"{self.file_dir}/{result['best_model']}.pkl")
 
                 return result['best_model']
 
@@ -698,8 +731,8 @@ class Orchestrator:
             if isinstance(model, ensembleClassifier_tuple):
                 explainer = shap.TreeExplainer(model, self.X_train)
 
-                shap_values_train = explainer(self.X_train)
-                shap_values_test = explainer(self.X_test)
+                shap_values_train = explainer(self.X_train, check_additivity=False)
+                shap_values_test = explainer(self.X_test, check_additivity=False)
 
                 if n_classes is not None:
                             
@@ -772,8 +805,8 @@ class Orchestrator:
             if isinstance(model, ensembleRegressor_tuple):
 
                 explainer = shap.TreeExplainer(model, self.X_train)
-                shap_values_test = explainer(self.X_test)  
-                shap_values_train = explainer(self.X_train)
+                shap_values_test = explainer(self.X_test, check_additivity=False)  
+                shap_values_train = explainer(self.X_train, check_additivity=False)
                 
                 plt.title("Summary Plot for X_train (Regression)")
                 shap.summary_plot(shap_values_train, self.X_train)
