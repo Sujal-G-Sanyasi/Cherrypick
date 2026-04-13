@@ -1,0 +1,82 @@
+
+code {
+    background-color: #161b22 !important;
+    color: #58a6ff !important;
+    padding: 3px 6px;
+    border-radius: 6px;
+    border: none;
+}
+
+
+.rst-content code {
+    background-color: #161b22 !important;
+    color: #58a6ff !important;
+}
+
+.highlight {
+    background: #1e1e1e !important;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+
+
+.rst-content p {
+    line-height: 1.6;
+}
+
+h1, h2, h3 {
+    font-weight: 600;
+}
+
+
+.wy-nav-content {
+    max-width: 1200px;
+    margin: auto;
+}
+
+
+
+/* =========================
+   SIGNATURE FIX (BIG + CLEAN)
+========================= */
+
+/* Whole signature block */
+.sig {
+    font-size: 18px !important;          /* bigger */
+    line-height: 1.6 !important;         /* more spacing */
+    font-family: "JetBrains Mono", monospace !important;
+
+    white-space: normal !important;      /* 🔥 allows wrapping */
+    word-break: break-word;              /* prevent overflow */
+}
+
+/* Class / function name */
+.sig-name {
+    font-size: 20px !important;
+    font-weight: 700;
+    color: #58a6ff !important;
+}
+
+/* Parameters */
+.sig-param {
+    font-size: 16px !important;
+    color: #c9d1d9 !important;
+}
+
+/* Make it visually separated */
+.sig {
+    background: rgba(255,255,255,0.05) !important;
+    padding: 10px 12px;
+    border-radius: 10px;
+}
+
+/* =========================
+   MODULE PATH COLOR FIX 🔥
+========================= */
+
+/* cherrypick.explain part */
+.sig-prename {
+    color: #ffffff !important;   /* make it white */
+    opacity: 0.9;
+}

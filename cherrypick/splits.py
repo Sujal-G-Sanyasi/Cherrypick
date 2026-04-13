@@ -16,17 +16,21 @@ def splitter(df, target:str, test_size:float) -> tuple[tuple, tuple]:
         test_size : float
             Proportion of the dataset to include in the test split.
             Must be between 0.0 and 1.0.
+        
+        Examples
+        --------
+        >>> train, test = splitter(df= df, target=target_column, test_size=0.25)
 
         Returns
         -------
         tuple
             A tuple containing:
 
-            - X_train - pandas.DataFrame
-            - X_test  - pandas.DataFrame
-            - y_train - pandas.Series
-            - y_test  - pandas.Series
-
+            - X_train - pandas.DataFrame(train)
+            - y_train - pandas.Series(train)
+            - X_test  - pandas.DataFrame(test)
+            - y_test  - pandas.Series(test)
+        
         Notes
         -----
         - Features are obtained by dropping the target column from ``df``.

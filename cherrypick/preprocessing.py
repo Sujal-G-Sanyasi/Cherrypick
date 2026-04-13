@@ -13,15 +13,19 @@ war.filterwarnings('ignore')
 
 class Preprocessor:
     """
-        Split dataset into training and testing sets.
+    Split dataset into training and testing sets.
 
-        Parameters
-        ----------
-        df : pandas.DataFrame
-            Input dataset containing features and target variable.
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Input dataset containing features and target variable.
 
-        duplicate : str
-            Removes duplicate values row-wise if `duplicate = 'drop'`, else returns original value.
+    duplicate : str
+        Removes duplicate values row-wise if ``duplicate = 'drop'``, else returns original value.
+
+    Examples
+    --------
+    >>> preprocess = Preprocessor(df=df) ## Initialization of Preprocessor
     """
     def __init__(self, df, duplicate : Literal["drop"] = None): 
         
@@ -41,20 +45,27 @@ class Preprocessor:
 
         type : {'mean', 'median', 'mode'}
             determines the type of Imputation techniques.
-                
-                               - **mean** - Takes `mean of all samples` in a feature and substitutes the *NaN* value.
-                              
-                               - **median** - Takes `median of all samples` in a feature and substitutes the *NaN* value, aggresive and robust to Outliers.
-                               
-                               - **mode** - Takes the `most frequently occuring value of a sample` in a feature and substitute the *NaN* value, used for categorical features.
-            
 
+            - ``mean`` - Takes ``mean of all samples`` in a feature and substitutes the *NaN* value.
+
+            - ``median`` - Takes ``median of all samples`` in a feature and substitutes the *NaN* value, aggresive and robust to Outliers.
+
+            - ``mode`` - Takes the ``most frequently occuring value of a sample`` in a feature and substitute the *NaN* value, used for categorical features.
+
+        Examples
+        --------
+        >>> preprocess.fill_null(type='mean', columns=column) ## Fill nulls by taking mean of all values in specified column
+        >>> preprocess.fill_null(type='median', columns=column) ## Fill nulls by taking median of all values in specified column
+        >>> preprocess.fill_null(type='mode', columns=column) ## Fill nulls by taking mode of all values in specified categorical column
+
+        >>> print(df.isna().sum()) ## returns 0 as all nulls are handeled using Imputers
         Returns
         -------
         pd.DataFrame
-            Cleaned dataset with all *NaN* values handeled with mean, mode and median imputation statistical  techniques.
-
+            Cleaned dataset with all *NaN* values handeled with mean, mode and median imputation statistical techniques.
         """
+
+        
         try:
             IMPUTER_CONFIG = {
                     "mean" : self.df[columns].fillna(self.df[columns].mean()),
@@ -70,26 +81,38 @@ class Preprocessor:
 
     def collinear(self, threshold:float, show:Literal[True, False] = False, method : Literal['spearman', 'pearson'] = 'pearson'):
         """
-        Method consisting several Imputers for handling Null values in a given dataset.
+        Handle multicollinearity by identifying highly correlated features.
+
+        This method detects correlated features based on a specified correlation
+        threshold and statistical method.
 
         Parameters
         ----------
-        threshold : str
-            Desired column name of a input variable for imputer processing.
+        threshold : float
+            Correlation threshold above which features are considered collinear.
 
-        type : {'spearman', 'pearson'}, Default = 'pearson'
-            determines the type of Imputation techniques.
-                
-                               - **spearman** - Uses Spearman correlation for better correlation capturing between each features .
-                              
-                               - **pearson** - Uses Pearson correlation for capturing correlation between features.
-            
+        method : {'spearman', 'pearson'}, default='pearson'
+            Type of correlation method used:
 
+            - ``spearman`` : Captures monotonic relationships using rank correlation
+            - ``pearson`` : Measures linear correlation between features
+
+        show : {True, False}, default=False
+            Shows correlation matrix with list of collinear features if True, else just returns the list of collinear features
+        
         Returns
         -------
         list
-            returns the list of correlated features that are bounded to be removed.
+            List of correlated features recommended for removal.
 
+        Notes
+        -----
+        - Helps reduce multicollinearity in datasets.
+        - Improves model stability and interpretability.
+
+        Examples
+        --------
+        >>> preprocess.collinear(threshold=0.85, type='pearson', show=true)
         """
         try:
             columns = set()
@@ -130,7 +153,22 @@ class Preprocessor:
                                - **label** - Uses LabelEncoder on target(output) column if there exist non-numeric categorical data.
                                         **returns**
                                         Matrix containing 1 to n, based upon the number of class
+        
+        train_data : tuple
+            Arguement requires Training data i.e `X_train and y_train`.
+
+        test_data : tuple
+            Arguement requires Training data i.e `X_test and y_test`.
+
+        encoder_dir : str
+            File directory where the encoder needs to persist.
+
+
             
+        Examples
+        --------
+        >>> preprocess.encoder(train_data = train, test_data = test, column = 'feature1', type = 'onehot', encoder_dir='encoder_') ## Onehot encodings for Input Features, returns Sparse matrix
+        >>> preprocess.encoder(train_data = train, test_data = test, column = 'target', type = 'label', encoder_dir='encoder_') ## label encodings for Output/target feature
 
         Returns
         -------

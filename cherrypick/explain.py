@@ -19,27 +19,28 @@ def explainer(model, data, impact_type :Literal['pos', 'neg', 'all'] = 'all'):
     Parameters
     ----------
     model : object
-        A trained tree-based model compatible with shap.TreeExplainer
+        A trained tree-based model compatible with ``shap.TreeExplainer``
         (e.g., XGBoost, LightGBM, RandomForest).
 
     data : pandas.DataFrame
-        Input dataset for which SHAP values are to be computed.
+        Input dataset for which SHAP values are computed.
         Must contain only feature columns (no target column).
 
     impact_type : {'pos', 'neg', 'all'}, default='all'
         Type of feature impact to return:
-        - '**pos**' - Returns features with positive contribution.
-        - '**neg**' - Returns features with negative contribution.
-        - '**all**' - Returns all features with overall importance
-                  (absolute SHAP values).
+
+        - ``pos`` : Features with positive contribution
+        - ``neg`` : Features with negative contribution
+        - ``all`` : All features based on absolute SHAP values
 
     Returns
     -------
     result : pandas.DataFrame
-        A sorted DataFrame containing feature importance:
-        - For 'all' → columns: ['Features', 'Overall_Impact']
-        - For 'pos' → columns: ['Features', 'Positive_Impact']
-        - For 'neg' → columns: ['Features', 'Negative_Impact']
+        Sorted DataFrame containing feature importance:
+
+        - ``all`` → columns: ['Features', 'Overall_Impact']
+        - ``pos`` → columns: ['Features', 'Positive_Impact']
+        - ``neg`` → columns: ['Features', 'Negative_Impact']
 
     shap_values : shap.Explanation
         Raw SHAP explanation object containing per-sample contributions.
@@ -48,18 +49,17 @@ def explainer(model, data, impact_type :Literal['pos', 'neg', 'all'] = 'all'):
     -----
     - For multi-class models, SHAP values are averaged across classes.
     - Feature importance is computed using mean absolute SHAP values.
-    - The function also stores SHAP values globally in `_shap_val`.
+    - SHAP values are also stored globally in ``_shap_val``.
 
     Raises
     ------
     ValueError
-        If `impact_type` is not one of {'pos', 'neg', 'all'}.
+        If ``impact_type`` is not one of {'pos', 'neg', 'all'}.
 
-    Example
-    -------
+    Examples
+    --------
     >>> result, shap_vals = explainer(model, X_test, impact_type='all')
-    >>> print(result.head())
-
+    >>> result
     """
 
     ## All the Shap values with magnitude based as well!

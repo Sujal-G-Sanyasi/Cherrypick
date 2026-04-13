@@ -18,18 +18,22 @@ class OutlierPruner:
     method : {'iqr', 'zscore', 'mod_zscore', 'isoforest', 'lof'}
         Method used for outlier detection.
 
-        - `'iqr'`         - Interquartile Range method
-        - `'zscore'`      - Standard Z-score normalization
-        - `'mod_zscore'`  - Modified Z-score:
+        - ``iqr`` : Interquartile Range method
+        - ``zscore`` : Standard Z-score normalization
+        - ``mod_zscore`` : Modified Z-score
 
-                        `modified_Zscore = 0.6745 * (X - median) / MAD`
+        .. math::
 
-                        *Where,* 
-                        **median** = *median of the sample data*
-                        **MAD** = *median absolute deviation*
-                        **X** = *sample data points(Xi)*
-        - `'isoforest'`   - Isolation Forest, an ensemble-based anomaly detection method
-        - `'lof'`         - Local Outlier Factor, detects outliers using local density
+            Z = 0.6745 * (X - median) / MAD
+
+        Where:
+
+        - **median** : median of the sample data
+        - **MAD** : median absolute deviation
+        - **X** : sample data points
+
+        - ``isoforest`` : Isolation Forest (ensemble-based anomaly detection)
+        - ``lof`` : Local Outlier Factor (density-based detection)
 
     df : pandas.DataFrame
         Input dataset on which outlier pruning will be applied.
@@ -41,7 +45,13 @@ class OutlierPruner:
     -----
     - Statistical methods require a specific column (``col``).
     - ML-based methods (Isolation Forest, Local Outlier Factor) operate on numerical features.
-    - Modified Z-score is robust to extreme values as it uses the median instead of mean.
+    - Modified Z-score is robust to extreme values as it uses the median instead of the mean.
+
+    Code
+    -----
+    >>> pruner = OutlierPruner(df=df, method='isoforest', col=column)
+     
+    >>> pruner.remove_outlier() ## removes the Outliers using Isolation forest 
     """
 
     def __init__(self, method: Literal['iqr', 'zscore', 'mod_zscore', 'isoforest', 'lof'], df:pd.DataFrame, col:str):

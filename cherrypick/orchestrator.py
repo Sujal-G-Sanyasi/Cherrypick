@@ -69,6 +69,24 @@ class Orchestrator:
     file_dir : str
         Directory where the best estimator will be saved.
         For example, if a folder ``model/`` exists, use ``file_dir='model'``.
+    
+    Examples
+    ---------
+    >>> orch = Orchestrator(
+                train = train,
+                test=test,
+                problem_statement='classification', ## for classification
+                focus_classifier='f1score',
+                file_dir='model'
+            )
+            
+    >>> orch = Orchestrator(
+                train = train,
+                test=test,
+                problem_statement='regression',
+                focus_regressor='mae',
+                file_dir='model'
+            )
     """
 
     def __init__(self, train: tuple[pd.DataFrame, pd.Series], test:tuple[pd.DataFrame, pd.Series], file_dir:str, problem_statement : Literal['regression', 'classification'], seed:int = 42, focus_classifier: Literal['recall', 'precision', 'f1score'] = 'f1score', focus_regressor:Literal['mse', 'mae', 'rmse'] = 'mse' ):
@@ -91,6 +109,10 @@ class Orchestrator:
         """
     Returns best performing trained model.
 
+    Code
+    --------
+    >>> orch.best_estimator
+
     Returns
     -------
     object
@@ -108,6 +130,10 @@ class Orchestrator:
     def orchestrate(self):
         '''
         The function `orchestrate()` triggers the ML-model orchestration by cherry-picking the best estimator.
+
+        Code
+        --------
+        >>> orch.orchestrate() ## Orchestrates entire model training and selects best model based upon Orchestrator() configs.
         '''
 
         regressor_models = {
@@ -367,6 +393,9 @@ class Orchestrator:
                 
 
     def cv(self, type_cv:str, param_grid : dict, scoring_type:str, n_jobs:int=-1, cv: int=5):
+        '''
+        Under **progress** will be available soon!
+        '''
         try:
             if type_cv == 'randomised':
                 random = RandomizedSearchCV(
@@ -441,23 +470,34 @@ class Orchestrator:
         scoring : str
             Metric used to evaluate each cross-validation fold.
 
-        topkmodel : int, default=None
+        topkmodel : int, optional
             Index of the model to evaluate from the top-k selected models.
             If not provided, the best estimator is used by default.
 
         Returns
         -------
-        *str | int*
-            Alert message with `Relative Gap` i.e `overfitting_gap / Mse(with training data)`
+        str
+            Alert message including the relative gap:
 
-            Where, 
+            .. math::
 
-            **overfitting_gap** = *Mean of cross val score - MSE (with training data)*
+                \\text{Relative Gap} = \\frac{\\text{overfitting\\_gap}}{\\text{MSE (training)}}
+
+            Where:
+
+            - **overfitting_gap** = mean cross-validation score − training MSE
 
         Notes
         -----
         - Helps identify whether the model is overfitting or underfitting.
-        - Higher variance indicates overfitting, while high bias indicates underfitting.
+        - Higher variance indicates overfitting.
+        - High bias indicates underfitting.
+
+        Code
+        --------
+        >>> orch.critique(cv=n, scoring='neg_mean_squared_error') ## Checks the sanity(bias-variance tradeoffs) for best model
+        >>> orch.critique(cv=n, scoring='neg_mean_squared_error', topkmodel = model) ## Checks the sanity(bias-variance tradeoffs) for custom model
+
         """
 
         try:
@@ -527,25 +567,32 @@ class Orchestrator:
 
         Parameters
         ----------
-        access_estimator : int, default=None
-            Index of the estimator `1st to nth` to access from the ranked model list.
-            If provided, returns the selected estimator.
+        access_estimator : int, optional
+            Index of the estimator to access from the ranked model list
+            (1st, 2nd, ..., nth). If provided, returns the selected estimator.
 
-        threshold : float or int, default=None
-            Threshold value used to filter models based on performance metric.
+        threshold : float or int, optional
+            Threshold value used to filter models based on the evaluation metric.
             Only models meeting the threshold criteria are returned.
 
         Returns
         -------
         pandas.DataFrame or None
             DataFrame containing ranked models and their evaluation metrics.
-            Returns None if a specific estimator is accessed.
+
+            If ``access_estimator`` is provided, returns the selected estimator
+            instead of a DataFrame.
 
         Notes
         -----
         - Models are ranked based on the selected evaluation metric.
-        - If both parameters are None, returns the full ranked model table.
+        - If both parameters are ``None``, the full ranked model table is returned.
         - If ``access_estimator`` is provided, threshold filtering is ignored.
+
+        Code
+        --------
+        >>> orch.topkmodel() ## returns leaderboard of top K models
+        >>> orch.topkmodel(access_estimator = n) ## returns choosen model from nth rank(1st - nth)
         """
         
         console = Console()
@@ -657,36 +704,48 @@ class Orchestrator:
         
 
     def auto_explain(self, n_classes:int = None, size:tuple|None = None, model : str = 'best'):
+        
         """
-    Generate SHAP-based explanations for trained models.
+        Generate SHAP-based explanations for trained models.
 
-    Provides automatic model interpretability using SHAP (SHapley Additive Explanations)
-    for both regression and classification tasks. Supports TreeExplainer and
-    LinearExplainer, along with visualization tools such as summary plots and barplots.
+        Provides automatic model interpretability using SHAP
+        (SHapley Additive Explanations) for both regression and
+        classification tasks. Supports TreeExplainer and LinearExplainer,
+        along with visualization tools such as summary plots and bar plots.
 
-    Parameters
-    ----------
-    n_classes : int
-        Number of unique output classes. Required for classification tasks.
+        Parameters
+        ----------
+        n_classes : int
+            Number of unique output classes. Required for classification tasks.
 
-    size : tuple or None, default=None
-        Figure size used for resizing Decision Tree visualizations.
+        size : tuple, optional
+            Figure size used for resizing Decision Tree visualizations.
 
-    model : str, default='best'
-        Specifies which model to explain.
-        If set to ``'best'``, the top-performing estimator is used.
+        model : str, default='best'
+            Specifies which model to explain.
 
-    Returns
-    -------
-    None
-        Generates SHAP visualizations such as summary plots and barplots if n_classes is provided for classification task.
+            - ``'best'`` : Uses the top-performing estimator.
 
-    Notes
-    -----
-    - Uses SHAP TreeExplainer for tree-based models and LinearExplainer for linear models.
-    - Supports both regression and classification workflows.
-    - Visual outputs include summary plots and feature importance insights.
-    """
+        Returns
+        -------
+        None
+            Generates SHAP visualizations such as summary plots and bar plots.
+            For classification tasks, ``n_classes`` must be specified.
+
+        Notes
+        -----
+        - Uses SHAP TreeExplainer for tree-based models.
+        - Uses SHAP LinearExplainer for linear models.
+        - Supports both regression and classification workflows.
+        - Outputs include summary plots and feature importance visualizations.
+
+        Code
+        --------
+        >>> orch.auto_explain() ## for best model explaination
+        >>> orch.auto_explain(n_classes=class_ids) ## classification type best model explaination
+        >>> orch.auto_explain(model=model) ## custom model based explaination 
+        """
+    
         
         ensembleClassifier_tuple = (
                                     RandomForestClassifier,

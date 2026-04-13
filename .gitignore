@@ -1,10 +1,9 @@
 venv/
 model/
 cherrypickml.egg-info/
-build/
 .pytest_cache/
 __pycache__/
-
+build/
 dist/
 *.egg-info
-*.ipynb
+test_finale.ipynb
