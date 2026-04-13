@@ -12,7 +12,7 @@
 | Package | PyPI distribution [![cherrypick-ml](https://img.shields.io/badge/cherrypick--ml-PyPI-blue?style=plastic)](https://pypi.org/project/cherrypick-ml/) [![version](https://img.shields.io/pypi/v/cherrypick-ml?style=plastic)](https://pypi.org/project/cherrypick-ml/)|
 | License | [![license](https://img.shields.io/badge/license-MIT-yellow?style=plastic)](LICENSE) |
 | downloads | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/cherrypick-ml?period=total&units=NONE&left_color=YELLOWGREEN&right_color=RED&left_text=downloads)](https://pepy.tech/projects/cherrypick-ml) |
-| docs |  [![Docs](https://img.shields.io/badge/cherrypick-ml-live-blue?style=plastic)](https://cherrypick-ml.readthedocs.io) |
+| docs |  [![Docs](https://img.shields.io/badge/cherrypickml-live-blue?style=plastic)](https://cherrypick-ml.readthedocs.io) |
 
 ---
 
