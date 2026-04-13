@@ -8,10 +8,10 @@
 
 | | |
 | --- | --- |
-| Testing | Structured validation of preprocessing, orchestration, and explainability components |
-| Package | PyPI distribution for cherrypick-ml |
-| Meta | MIT License, Python-based machine learning pipeline framework |
-
+| Testing | Structured validation of preprocessing, orchestration, and explainability components [![Tests](https://img.shields.io/badge/tests-passing-green?style=plastic)]() |
+| Package | PyPI distribution [![cherrypick-ml](https://img.shields.io/badge/cherrypick--ml-PyPI-blue?style=plastic)](https://pypi.org/project/cherrypick-ml/) [![version](https://img.shields.io/pypi/v/cherrypick-ml?style=plastic)](https://pypi.org/project/cherrypick-ml/)|
+| License | [![license](https://img.shields.io/badge/license-MIT-yellow?style=plastic)](LICENSE) |
+| downloads | [![PyPI Downloads](https://static.pepy.tech/personalized-badge/cherrypick-ml?period=total&units=NONE&left_color=YELLOWGREEN&right_color=RED&left_text=downloads)](https://pepy.tech/projects/cherrypick-ml) |
 ---
 
 ## What is it?
@@ -22,15 +22,25 @@ The library is designed to simplify real-world machine learning development by r
 
 ---
 
+## Contributors and Contributions
+
+<a href="https://github.com/Sujal-G-Sanyasi/Cherrypick/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Sujal-G-Sanyasi/Cherrypick" width="50" />
+</a>
+
+<p align="center">
+  <a href="https://github.com/Sujal-G-Sanyasi/Cherrypick">
+    <img src="https://github-readme-activity-graph.vercel.app/graph?username=Sujal-G-Sanyasi&repo=Cherrypick&theme=github-dark&hide_title=true" width="800" />
+  </a>
+</p>
+
+---
+
 ## Table of Contents
 
 - [Main Features](#main-features)
 - [Core Components](#core-components)
 - [Where to get it](#where-to-get-it)
-- [Dependencies](#dependencies)
-- [Installation from sources](#installation-from-sources)
-- [Basic Usage](#basic-usage)
-- [License](#license)
 - [Documentation](#documentation)
 
 ---
@@ -74,7 +84,7 @@ The library is structured into the following modules:
 
 The source code is currently hosted on GitHub at:
 
-https://github.com/Sujal-G-Sanyasi/cherrypick-ml
+https://github.com/Sujal-G-Sanyasi/Cherrypick
 
 Binary installers for the latest released version are available at the Python Package Index (PyPI):
 
