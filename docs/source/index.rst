@@ -69,9 +69,6 @@ Install via pip:
 
 ---
 
-Contents
---------
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
