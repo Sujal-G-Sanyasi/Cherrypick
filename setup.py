@@ -20,7 +20,7 @@ def get_requirements():
 setup(
     name="cherrypick-ml",
     author="Sujal G Sanyasi",
-    version="0.1.3",
+    version="0.1.4",
     author_email="cherrypickml1@gmail.com",
     description="A lightweight ML orchestration library with preprocessing, anomaly detection, and explainability tools",
     long_description= open("README.md", encoding="utf-8").read(),
